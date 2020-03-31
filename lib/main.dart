@@ -27,12 +27,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  @override
+  void initState() {
+    super.initState();
+    _initData();
+  }
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+  void _initData() async {
+    await DefaultAssetBundle.of(context).loadString('assets/city_code.json');
   }
 
   @override

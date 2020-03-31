@@ -12,7 +12,7 @@ class ProvinceTitle extends StatelessWidget{
   Widget build(BuildContext context) {
     return Container(
       color: Colors.grey,
-      child: Text('$index  ${entity.code}  ${entity.name}'),
+      child: Text('$index  ${entity.code}  ${entity.name}', style: TextStyle(fontSize: 18,),),
     );
   }
 
