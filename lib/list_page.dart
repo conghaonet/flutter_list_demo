@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutterlistdemo/province_title.dart';
+import 'package:flutterlistdemo/province_item.dart';
 
-import 'area_title.dart';
-import 'city_title.dart';
+import 'area_item.dart';
+import 'city_item.dart';
 import 'entity.dart';
 
 class ListPage extends StatefulWidget {
@@ -60,11 +60,11 @@ class _ListPageState extends State<ListPage> {
           child: ListView.builder(
             itemBuilder: (context, index) {
               if(items[index].item is ProvinceEntity) {
-                return ProvinceTitle(index, items[index].item as ProvinceEntity);
+                return ProvinceItem(index, items[index].item as ProvinceEntity);
               } else if(items[index].item is CityEntity) {
-                return CityTitle(index, items[index].item as CityEntity);
+                return CityItem(index, items[index].item as CityEntity);
               } else {
-                return AreaTitle(index, items[index].item as AreaEntity);
+                return AreaItem(index, items[index].item as AreaEntity);
               }
             },
             itemCount: items.length,

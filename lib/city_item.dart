@@ -2,11 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterlistdemo/entity.dart';
 
-class CityTitle extends StatelessWidget{
+class CityItem extends StatelessWidget{
   final int index;
   final CityEntity entity;
 
-  CityTitle(this.index, this.entity);
+  CityItem(this.index, this.entity);
 
   @override
   Widget build(BuildContext context) {
