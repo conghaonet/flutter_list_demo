@@ -11,8 +11,8 @@ class CityTitle extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.grey,
-      child: Text('$index  ${entity.code}  ${entity.name}'),
+      color: Colors.grey.withOpacity(0.5),
+      child: Text('$index  ${entity.code}  ${entity.name}', style: TextStyle(fontSize: 16,),),
     );
   }
 

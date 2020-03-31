@@ -4,15 +4,14 @@ import 'package:flutterlistdemo/entity.dart';
 
 class AreaTitle extends StatelessWidget{
   final int index;
-  final CityEntity entity;
+  final AreaEntity entity;
 
   AreaTitle(this.index, this.entity);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.grey,
-      child: Text('$index  ${entity.code}  ${entity.name}'),
+      child: Text('$index  ${entity.code}  ${entity.name}', style: TextStyle(fontSize: 14,),),
     );
   }
 
