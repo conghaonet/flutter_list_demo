@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutterlistdemo/province_item.dart';
+import 'package:flutterlistdemo/province_notifier.dart';
+import 'package:provider/provider.dart';
 
 import 'area_item.dart';
 import 'city_item.dart';
@@ -27,10 +29,17 @@ class _ListPageState extends State<ListPage> {
       items.add(ListItem(provinces[i]));
       if(provinces[i].city != null) {
         for(int j=0; j<provinces[i].city.length; j++) {
-          items.add(ListItem(provinces[i].city[j]));
+          items.add(ListItem(
+            provinces[i].city[j],
+            province: provinces[i],
+          ));
           if(provinces[i].city[j].area != null) {
             for(int k=0; k<provinces[i].city[j].area.length; k++) {
-              items.add(ListItem(provinces[i].city[j].area[k]));
+              items.add(ListItem(
+                provinces[i].city[j].area[k],
+                city: provinces[i].city[j],
+                province: provinces[i],
+              ));
             }
           }
         }
@@ -46,6 +55,12 @@ class _ListPageState extends State<ListPage> {
     provinces = listDynamic.map((js) => ProvinceEntity.fromJson(js)).toList();
     _rebuildList();
     print('end<<<< ' + DateTime.now().toString());
+
+    Provider.of<ProvinceNotifier>(context, listen: false).addListener((){
+      setState(() {
+
+      });
+    });
     setState(() {});
   }
 
@@ -58,13 +73,20 @@ class _ListPageState extends State<ListPage> {
       body: SafeArea(
         child: Container(
           child: ListView.builder(
+            cacheExtent: 0.0,
             itemBuilder: (context, index) {
               if(items[index].item is ProvinceEntity) {
                 return ProvinceItem(index, items[index].item as ProvinceEntity);
               } else if(items[index].item is CityEntity) {
-                return CityItem(index, items[index].item as CityEntity);
+                if(items[index].province.hidden)
+                  return SizedBox(height: 0,);
+                else
+                  return CityItem(index, items[index].item as CityEntity);
               } else {
-                return AreaItem(index, items[index].item as AreaEntity);
+                if(items[index].province.hidden || items[index].city.hidden)
+                  return SizedBox(height: 0,);
+                else
+                  return AreaItem(index, items[index].item as AreaEntity);
               }
             },
             itemCount: items.length,
@@ -77,5 +99,7 @@ class _ListPageState extends State<ListPage> {
 
 class ListItem {
   final dynamic item;
-  ListItem(this.item);
+  final CityEntity city;
+  final ProvinceEntity province;
+  ListItem(this.item, {this.city, this.province,});
 }
