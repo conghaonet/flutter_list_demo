@@ -4,9 +4,9 @@ import 'package:flutterlistdemo/entity.dart';
 
 class ProvinceItem extends StatelessWidget{
   final int index;
-  final ProvinceEntity entity;
+  final ProvinceEntity province;
 
-  ProvinceItem(this.index, this.entity);
+  ProvinceItem(this.index, this.province);
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class ProvinceItem extends StatelessWidget{
       },
       child: Container(
         color: Colors.grey,
-        child: Text('$index  ${entity.code}  ${entity.name}', style: TextStyle(fontSize: 18,),),
+        child: Text('$index  ${province.code}  ${province.name}', style: TextStyle(fontSize: 18,),),
       ),
     );
   }
