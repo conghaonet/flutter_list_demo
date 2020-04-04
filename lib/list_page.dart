@@ -63,7 +63,7 @@ class _ListPageState extends State<ListPage> {
     });
     _controller.addListener(() {
       ScrollPosition scrollPosition = _controller.position;
-      print('scrollPosition.axis.index = ${scrollPosition.axis.index}');
+      print('_controller.offset = ${_controller.offset}');
     });
     setState(() {});
   }
@@ -78,6 +78,7 @@ class _ListPageState extends State<ListPage> {
         child: Container(
           child: ListView.builder(
             controller: _controller,
+            physics: ClampingScrollPhysics(),
             cacheExtent: 0.0,
             itemBuilder: (context, index) {
               if(_items[index].item is ProvinceEntity) {
