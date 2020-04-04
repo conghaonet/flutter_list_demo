@@ -10,7 +10,7 @@ class AreaItem extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    print('areaItem index=$index');
+//    print('areaItem index=$index');
     return Container(
       padding: EdgeInsets.all(18),
       child: Text('$index  ${area.code}  ${area.name}', style: TextStyle(fontSize: 14,),),

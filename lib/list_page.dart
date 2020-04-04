@@ -15,9 +15,9 @@ class ListPage extends StatefulWidget {
 }
 
 class _ListPageState extends State<ListPage> {
-  List<ProvinceEntity> provinces = [];
-  List<ListItem> items = [];
-
+  List<ProvinceEntity> _provinces = [];
+  List<ListItem> _items = [];
+  final ScrollController _controller = ScrollController();
   @override
   void initState() {
     super.initState();
@@ -25,20 +25,20 @@ class _ListPageState extends State<ListPage> {
   }
 
   void _rebuildList() {
-    for(int i=0; i<provinces.length; i++) {
-      items.add(ListItem(provinces[i]));
-      if(provinces[i].city != null) {
-        for(int j=0; j<provinces[i].city.length; j++) {
-          items.add(ListItem(
-            provinces[i].city[j],
-            province: provinces[i],
+    for(int i=0; i<_provinces.length; i++) {
+      _items.add(ListItem(_provinces[i]));
+      if(_provinces[i].city != null) {
+        for(int j=0; j<_provinces[i].city.length; j++) {
+          _items.add(ListItem(
+            _provinces[i].city[j],
+            province: _provinces[i],
           ));
-          if(provinces[i].city[j].area != null) {
-            for(int k=0; k<provinces[i].city[j].area.length; k++) {
-              items.add(ListItem(
-                provinces[i].city[j].area[k],
-                city: provinces[i].city[j],
-                province: provinces[i],
+          if(_provinces[i].city[j].area != null) {
+            for(int k=0; k<_provinces[i].city[j].area.length; k++) {
+              _items.add(ListItem(
+                _provinces[i].city[j].area[k],
+                city: _provinces[i].city[j],
+                province: _provinces[i],
               ));
             }
           }
@@ -52,7 +52,7 @@ class _ListPageState extends State<ListPage> {
     String strJson = await DefaultAssetBundle.of(context).loadString('assets/city_code.json');
 //    List<ProvinceEntity> provinces = await compute(parseJson, strJson);
     List<dynamic> listDynamic = jsonDecode(strJson);
-    provinces = listDynamic.map((js) => ProvinceEntity.fromJson(js)).toList();
+    _provinces = listDynamic.map((js) => ProvinceEntity.fromJson(js)).toList();
     _rebuildList();
     print('end<<<< ' + DateTime.now().toString());
 
@@ -60,6 +60,10 @@ class _ListPageState extends State<ListPage> {
       setState(() {
 
       });
+    });
+    _controller.addListener(() {
+      ScrollPosition scrollPosition = _controller.position;
+      print('scrollPosition.axis.index = ${scrollPosition.axis.index}');
     });
     setState(() {});
   }
@@ -73,27 +77,34 @@ class _ListPageState extends State<ListPage> {
       body: SafeArea(
         child: Container(
           child: ListView.builder(
+            controller: _controller,
             cacheExtent: 0.0,
             itemBuilder: (context, index) {
-              if(items[index].item is ProvinceEntity) {
-                return ProvinceItem(index, items[index].item as ProvinceEntity);
-              } else if(items[index].item is CityEntity) {
-                if(items[index].province.hidden)
+              if(_items[index].item is ProvinceEntity) {
+                return ProvinceItem(index, _items[index].item as ProvinceEntity);
+              } else if(_items[index].item is CityEntity) {
+                if(_items[index].province.hidden)
                   return SizedBox(height: 0,);
                 else
-                  return CityItem(index, items[index].item as CityEntity);
+                  return CityItem(index, _items[index].item as CityEntity);
               } else {
-                if(items[index].province.hidden || items[index].city.hidden)
+                if(_items[index].province.hidden || _items[index].city.hidden)
                   return SizedBox(height: 0,);
                 else
-                  return AreaItem(index, items[index].item as AreaEntity);
+                  return AreaItem(index, _items[index].item as AreaEntity);
               }
             },
-            itemCount: items.length,
+            itemCount: _items.length,
           ),
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
   }
 }
 
