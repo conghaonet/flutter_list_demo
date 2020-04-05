@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutterlistdemo/list_item_view.dart';
 import 'package:flutterlistdemo/province_item.dart';
 import 'package:flutterlistdemo/province_notifier.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'area_item.dart';
 import 'city_item.dart';
 import 'entity.dart';
+import 'list_item_entity.dart';
 
 class ListPage extends StatefulWidget {
   @override
@@ -16,7 +18,7 @@ class ListPage extends StatefulWidget {
 
 class _ListPageState extends State<ListPage> {
   List<ProvinceEntity> _provinces = [];
-  List<ListItem> _items = [];
+  List<ListItemEntity> _items = [];
   final ScrollController _controller = ScrollController();
   @override
   void initState() {
@@ -26,16 +28,16 @@ class _ListPageState extends State<ListPage> {
 
   void _rebuildList() {
     for(int i=0; i<_provinces.length; i++) {
-      _items.add(ListItem(_provinces[i]));
+      _items.add(ListItemEntity(_provinces[i]));
       if(_provinces[i].city != null) {
         for(int j=0; j<_provinces[i].city.length; j++) {
-          _items.add(ListItem(
+          _items.add(ListItemEntity(
             _provinces[i].city[j],
             province: _provinces[i],
           ));
           if(_provinces[i].city[j].area != null) {
             for(int k=0; k<_provinces[i].city[j].area.length; k++) {
-              _items.add(ListItem(
+              _items.add(ListItemEntity(
                 _provinces[i].city[j].area[k],
                 city: _provinces[i].city[j],
                 province: _provinces[i],
@@ -64,6 +66,11 @@ class _ListPageState extends State<ListPage> {
     _controller.addListener(() {
       ScrollPosition scrollPosition = _controller.position;
       print('_controller.offset = ${_controller.offset}');
+      for(int i=0; i<_items.length; i++) {
+        if(_items[i].height != 0) {
+          print('index $i height=${_items[i].height}');
+        }
+      }
     });
     setState(() {});
   }
@@ -74,28 +81,20 @@ class _ListPageState extends State<ListPage> {
       appBar: AppBar(
         title: Text('LIST PAGE'),
       ),
-      body: SafeArea(
-        child: Container(
+      body: Container(
+        child: NotificationListener(
+          onNotification: (ScrollNotification notification) {
+              print('notification.metrics.pixels.toInt() = ${notification.metrics.pixels.toInt()}');  // 滚动位置。
+            return false;
+          },
           child: ListView.builder(
             controller: _controller,
             physics: ClampingScrollPhysics(),
+            itemCount: _items.length,
             cacheExtent: 0.0,
             itemBuilder: (context, index) {
-              if(_items[index].item is ProvinceEntity) {
-                return ProvinceItem(index, _items[index].item as ProvinceEntity);
-              } else if(_items[index].item is CityEntity) {
-                if(_items[index].province.hidden)
-                  return SizedBox(height: 0,);
-                else
-                  return CityItem(index, _items[index].item as CityEntity);
-              } else {
-                if(_items[index].province.hidden || _items[index].city.hidden)
-                  return SizedBox(height: 0,);
-                else
-                  return AreaItem(index, _items[index].item as AreaEntity);
-              }
+              return ListItemView(index: index, itemEntity: _items[index],);
             },
-            itemCount: _items.length,
           ),
         ),
       ),
@@ -107,11 +106,4 @@ class _ListPageState extends State<ListPage> {
     _controller?.dispose();
     super.dispose();
   }
-}
-
-class ListItem {
-  final dynamic item;
-  final CityEntity city;
-  final ProvinceEntity province;
-  ListItem(this.item, {this.city, this.province,});
 }
