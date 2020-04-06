@@ -19,6 +19,10 @@ class ListPage extends StatefulWidget {
 class _ListPageState extends State<ListPage> {
   List<ProvinceEntity> _provinces = [];
   List<ListItemEntity> _items = [];
+  int _topProvinceIndex = 0;
+  int _topCityIndex = 1;
+  ProvinceEntity _topProvinceEntity;
+
   final ScrollController _controller = ScrollController();
   @override
   void initState() {
@@ -63,15 +67,15 @@ class _ListPageState extends State<ListPage> {
 
       });
     });
-    _controller.addListener(() {
-      ScrollPosition scrollPosition = _controller.position;
-      print('_controller.offset = ${_controller.offset}');
-      for(int i=0; i<_items.length; i++) {
-        if(_items[i].height != 0) {
-          print('index $i height=${_items[i].height}');
-        }
-      }
-    });
+//    _controller.addListener(() {
+//      ScrollPosition scrollPosition = _controller.position;
+//      print('_controller.offset = ${_controller.offset}');
+//      for(int i=0; i<_items.length; i++) {
+//        if(_items[i].height != 0) {
+//          print('index $i height=${_items[i].height}');
+//        }
+//      }
+//    });
     setState(() {});
   }
 
@@ -81,22 +85,62 @@ class _ListPageState extends State<ListPage> {
       appBar: AppBar(
         title: Text('LIST PAGE'),
       ),
-      body: Container(
-        child: NotificationListener(
-          onNotification: (ScrollNotification notification) {
+      body: Stack(
+        children: <Widget>[
+          NotificationListener(
+            onNotification: (ScrollNotification notification) {
               print('notification.metrics.pixels.toInt() = ${notification.metrics.pixels.toInt()}');  // 滚动位置。
-            return false;
-          },
-          child: ListView.builder(
-            controller: _controller,
-            physics: ClampingScrollPhysics(),
-            itemCount: _items.length,
-            cacheExtent: 0.0,
-            itemBuilder: (context, index) {
-              return ListItemView(index: index, itemEntity: _items[index],);
+              double totalHeight = 0;
+              for(int i=0; i<_items.length; i++) {
+                if(totalHeight<=notification.metrics.pixels
+                    && (totalHeight + _items[i].height)>notification.metrics.pixels) {
+                  if(_items[i].item is ProvinceEntity) {
+                    _topProvinceEntity = _items[i].item;
+                  } else {
+                    _topProvinceEntity = _items[i].province;
+                  }
+                  setState(() {
+
+                  });
+                  break;
+                } else {
+                  totalHeight += _items[i].height;
+                }
+
+                if(_items[i].height != 0) {
+                  print('index $i height=${_items[i].height}');
+                }
+              }
+              return false;
             },
+            child: ListView.builder(
+              controller: _controller,
+              physics: ClampingScrollPhysics(),
+              itemCount: _items.length,
+              cacheExtent: 0.0,
+              itemBuilder: (context, index) {
+                return ListItemView(index: index, itemEntity: _items[index],);
+              },
+            ),
           ),
-        ),
+          if(_items.length > 0 && _topProvinceEntity != null)
+            InkWell(
+              onTap: () {
+                _topProvinceEntity.hidden = !_topProvinceEntity.hidden;
+                setState(() {
+                });
+                double height = 0;
+                for(int i=0; i<_items.length; i++) {
+                  if(_items[i].item == _topProvinceEntity) {
+                    _controller.jumpTo(height+_items[i].height);
+                  } else {
+                    height += _items[i].height;
+                  }
+                }
+              },
+              child: ProvinceItem(99999, _topProvinceEntity),
+            ),
+        ],
       ),
     );
   }
