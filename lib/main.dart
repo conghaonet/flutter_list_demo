@@ -59,7 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
             RaisedButton(
               child: Text('list_page'),
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context){
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
                   return ListPage();
                 }));
               },

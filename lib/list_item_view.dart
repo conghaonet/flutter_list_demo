@@ -25,7 +25,7 @@ class _ListItemViewState extends State<ListItemView> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((Duration timeStamp){
+    WidgetsBinding.instance.addPostFrameCallback((Duration timeStamp) {
       RenderBox _renderBox = _key.currentContext.findRenderObject();
 //      print('province index ================ ${widget.index}');
       Size size = _renderBox.size;
@@ -35,36 +35,37 @@ class _ListItemViewState extends State<ListItemView> {
 //      print('deviceSize = $deviceSize');
 //      Offset offset = _renderBox.localToGlobal(Offset.zero);
 //      print('province index=${widget.index}  position: $offset');
-
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
       key: _key,
-      onTap: widget.itemEntity.item is AreaEntity ? null : () {
-        if(widget.itemEntity.item is ProvinceEntity) {
-          (widget.itemEntity.item as ProvinceEntity).hidden = !(widget.itemEntity.item as ProvinceEntity).hidden;
-        } else if(widget.itemEntity.item is CityEntity) {
-          (widget.itemEntity.item as CityEntity).hidden = !(widget.itemEntity.item as CityEntity).hidden;
-        }
-        Provider.of<ProvinceNotifier>(context, listen: false).refreshProvince();
-      },
+      onTap: widget.itemEntity.item is AreaEntity
+          ? null
+          : () {
+              if (widget.itemEntity.item is ProvinceEntity) {
+                (widget.itemEntity.item as ProvinceEntity).hidden = !(widget.itemEntity.item as ProvinceEntity).hidden;
+              } else if (widget.itemEntity.item is CityEntity) {
+                (widget.itemEntity.item as CityEntity).hidden = !(widget.itemEntity.item as CityEntity).hidden;
+              }
+              Provider.of<ProvinceNotifier>(context, listen: false).refreshProvince();
+            },
       child: _buildItemWidget(),
     );
-
   }
 
   Widget _buildItemWidget() {
-    if(widget.itemEntity.item is ProvinceEntity) {
+    if (widget.itemEntity.item is ProvinceEntity) {
       return ProvinceItem(widget.index, widget.itemEntity.item as ProvinceEntity);
-    } else if(widget.itemEntity.item is CityEntity) {
-      if(!widget.itemEntity.province.hidden)
-        return CityItem(widget.index, widget.itemEntity.item as CityEntity);
+    } else if (widget.itemEntity.item is CityEntity) {
+      if (!widget.itemEntity.province.hidden) return CityItem(widget.index, widget.itemEntity.item as CityEntity);
     } else {
-      if(!widget.itemEntity.province.hidden && !widget.itemEntity.city.hidden)
-        return AreaItem(widget.index, widget.itemEntity.item as AreaEntity);
+      if (!widget.itemEntity.province.hidden && !widget.itemEntity.city.hidden) return AreaItem(widget.index, widget.itemEntity.item as AreaEntity);
     }
-    return SizedBox(height: 0,);
+    return SizedBox(
+      height: 0,
+    );
   }
 }

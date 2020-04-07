@@ -1,4 +1,3 @@
-
 import 'package:json_annotation/json_annotation.dart';
 
 part 'entity.g.dart';
@@ -10,13 +9,19 @@ class ProvinceEntity {
   bool hidden;
   List<CityEntity> city;
 
-  ProvinceEntity(this.name, this.code, this.hidden, this.city,);
+  ProvinceEntity(
+    this.name,
+    this.code,
+    this.hidden,
+    this.city,
+  );
 
   factory ProvinceEntity.fromJson(Map<String, dynamic> json) {
     final province = _$ProvinceEntityFromJson(json);
-    if(province.hidden == null) province.hidden = false;
+    if (province.hidden == null) province.hidden = false;
     return province;
   }
+
   Map<String, dynamic> toJson() => _$ProvinceEntityToJson(this);
 }
 
@@ -31,11 +36,11 @@ class CityEntity {
 
   factory CityEntity.fromJson(Map<String, dynamic> json) {
     final city = _$CityEntityFromJson(json);
-    if(city.hidden == null) city.hidden = false;
+    if (city.hidden == null) city.hidden = false;
     return city;
   }
-  Map<String, dynamic> toJson() => _$CityEntityToJson(this);
 
+  Map<String, dynamic> toJson() => _$CityEntityToJson(this);
 }
 
 @JsonSerializable()
@@ -46,6 +51,6 @@ class AreaEntity {
   AreaEntity(this.name, this.code);
 
   factory AreaEntity.fromJson(Map<String, dynamic> json) => _$AreaEntityFromJson(json);
-  Map<String, dynamic> toJson() => _$AreaEntityToJson(this);
 
+  Map<String, dynamic> toJson() => _$AreaEntityToJson(this);
 }

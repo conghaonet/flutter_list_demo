@@ -7,6 +7,10 @@ class ListItemEntity {
   final CityEntity city;
   final ProvinceEntity province;
   double height = 0;
-  ListItemEntity(this.item, {this.city, this.province,});
 
+  ListItemEntity(
+    this.item, {
+    this.city,
+    this.province,
+  });
 }

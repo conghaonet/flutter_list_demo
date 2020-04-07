@@ -24,6 +24,7 @@ class _ListPageState extends State<ListPage> {
   ProvinceEntity _topProvinceEntity;
 
   final ScrollController _controller = ScrollController();
+
   @override
   void initState() {
     super.initState();
@@ -31,16 +32,16 @@ class _ListPageState extends State<ListPage> {
   }
 
   void _rebuildList() {
-    for(int i=0; i<_provinces.length; i++) {
+    for (int i = 0; i < _provinces.length; i++) {
       _items.add(ListItemEntity(_provinces[i]));
-      if(_provinces[i].city != null) {
-        for(int j=0; j<_provinces[i].city.length; j++) {
+      if (_provinces[i].city != null) {
+        for (int j = 0; j < _provinces[i].city.length; j++) {
           _items.add(ListItemEntity(
             _provinces[i].city[j],
             province: _provinces[i],
           ));
-          if(_provinces[i].city[j].area != null) {
-            for(int k=0; k<_provinces[i].city[j].area.length; k++) {
+          if (_provinces[i].city[j].area != null) {
+            for (int k = 0; k < _provinces[i].city[j].area.length; k++) {
               _items.add(ListItemEntity(
                 _provinces[i].city[j].area[k],
                 city: _provinces[i].city[j],
@@ -62,10 +63,8 @@ class _ListPageState extends State<ListPage> {
     _rebuildList();
     print('end<<<< ' + DateTime.now().toString());
 
-    Provider.of<ProvinceNotifier>(context, listen: false).addListener((){
-      setState(() {
-
-      });
+    Provider.of<ProvinceNotifier>(context, listen: false).addListener(() {
+      setState(() {});
     });
 //    _controller.addListener(() {
 //      ScrollPosition scrollPosition = _controller.position;
@@ -89,25 +88,22 @@ class _ListPageState extends State<ListPage> {
         children: <Widget>[
           NotificationListener(
             onNotification: (ScrollNotification notification) {
-              print('notification.metrics.pixels.toInt() = ${notification.metrics.pixels.toInt()}');  // 滚动位置。
+              print('notification.metrics.pixels.toInt() = ${notification.metrics.pixels.toInt()}'); // 滚动位置。
               double totalHeight = 0;
-              for(int i=0; i<_items.length; i++) {
-                if(totalHeight<=notification.metrics.pixels
-                    && (totalHeight + _items[i].height)>notification.metrics.pixels) {
-                  if(_items[i].item is ProvinceEntity) {
+              for (int i = 0; i < _items.length; i++) {
+                if (totalHeight <= notification.metrics.pixels && (totalHeight + _items[i].height) > notification.metrics.pixels) {
+                  if (_items[i].item is ProvinceEntity) {
                     _topProvinceEntity = _items[i].item;
                   } else {
                     _topProvinceEntity = _items[i].province;
                   }
-                  setState(() {
-
-                  });
+                  setState(() {});
                   break;
                 } else {
                   totalHeight += _items[i].height;
                 }
 
-                if(_items[i].height != 0) {
+                if (_items[i].height != 0) {
                   print('index $i height=${_items[i].height}');
                 }
               }
@@ -119,20 +115,22 @@ class _ListPageState extends State<ListPage> {
               itemCount: _items.length,
               cacheExtent: 0.0,
               itemBuilder: (context, index) {
-                return ListItemView(index: index, itemEntity: _items[index],);
+                return ListItemView(
+                  index: index,
+                  itemEntity: _items[index],
+                );
               },
             ),
           ),
-          if(_items.length > 0 && _topProvinceEntity != null)
+          if (_items.length > 0 && _topProvinceEntity != null)
             InkWell(
               onTap: () {
                 _topProvinceEntity.hidden = !_topProvinceEntity.hidden;
-                setState(() {
-                });
+                setState(() {});
                 double height = 0;
-                for(int i=0; i<_items.length; i++) {
-                  if(_items[i].item == _topProvinceEntity) {
-                    _controller.jumpTo(height+_items[i].height);
+                for (int i = 0; i < _items.length; i++) {
+                  if (_items[i].item == _topProvinceEntity) {
+                    _controller.jumpTo(height + _items[i].height);
                   } else {
                     height += _items[i].height;
                   }
