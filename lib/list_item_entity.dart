@@ -1,5 +1,3 @@
-import 'package:flutter/cupertino.dart';
-
 import 'entity.dart';
 
 class ListItemEntity {

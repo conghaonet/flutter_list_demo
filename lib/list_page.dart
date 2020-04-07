@@ -6,8 +6,6 @@ import 'package:flutterlistdemo/province_item.dart';
 import 'package:flutterlistdemo/province_notifier.dart';
 import 'package:provider/provider.dart';
 
-import 'area_item.dart';
-import 'city_item.dart';
 import 'entity.dart';
 import 'list_item_entity.dart';
 
