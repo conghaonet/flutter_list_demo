@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterlistdemo/app_const.dart';
 import 'package:flutterlistdemo/list_item_entity.dart';
 import 'package:flutterlistdemo/province_item.dart';
 import 'package:flutterlistdemo/province_notifier.dart';
@@ -26,15 +27,19 @@ class _ListItemViewState extends State<ListItemView> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((Duration timeStamp) {
-      RenderBox _renderBox = _key.currentContext.findRenderObject();
-//      print('province index ================ ${widget.index}');
-      Size size = _renderBox.size;
-      widget.itemEntity.height = size.height;
-//      print('province size: $size');
-//      Size deviceSize = MediaQuery.of(context).size;
-//      print('deviceSize = $deviceSize');
-//      Offset offset = _renderBox.localToGlobal(Offset.zero);
-//      print('province index=${widget.index}  position: $offset');
+      if((AppConst.provinceHeight <= 0 && widget.itemEntity.item is ProvinceEntity)) {
+        RenderBox _renderBox = _key.currentContext.findRenderObject();
+        Size size = _renderBox.size;
+        AppConst.provinceHeight = size.height;
+      } else if((AppConst.cityHeight <= 0 && widget.itemEntity.item is CityEntity)) {
+        RenderBox _renderBox = _key.currentContext.findRenderObject();
+        Size size = _renderBox.size;
+        AppConst.cityHeight = size.height;
+      } else if((AppConst.areaHeight <= 0 && widget.itemEntity.item is AreaEntity)) {
+        RenderBox _renderBox = _key.currentContext.findRenderObject();
+        Size size = _renderBox.size;
+        AppConst.areaHeight = size.height;
+      }
     });
   }
 

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutterlistdemo/app_const.dart';
 import 'package:flutterlistdemo/list_item_view.dart';
 import 'package:flutterlistdemo/province_item.dart';
 import 'package:flutterlistdemo/province_notifier.dart';
@@ -86,10 +87,21 @@ class _ListPageState extends State<ListPage> {
         children: <Widget>[
           NotificationListener(
             onNotification: (ScrollNotification notification) {
-              print('notification.metrics.pixels.toInt() = ${notification.metrics.pixels.toInt()}'); // 滚动位置。
+//              print('notification.metrics.pixels.toInt() = ${notification.metrics.pixels.toInt()}'); // 滚动位置。
               double totalHeight = 0;
               for (int i = 0; i < _items.length; i++) {
-                if (totalHeight <= notification.metrics.pixels && (totalHeight + _items[i].height) > notification.metrics.pixels) {
+                if(_items[i].province != null && _items[i].province.hidden) {
+                  continue;
+                }
+                if(_items[i].city != null && _items[i].city.hidden) {
+                  continue;
+                }
+                double height = 0;
+                if(_items[i].item is ProvinceEntity) height = AppConst.provinceHeight;
+                else if(_items[i].item is CityEntity) height = AppConst.cityHeight;
+                else if(_items[i].item is AreaEntity) height = AppConst.areaHeight;
+
+                if (totalHeight <= notification.metrics.pixels && (totalHeight + height) > notification.metrics.pixels) {
                   if (_items[i].item is ProvinceEntity) {
                     _topProvinceEntity = _items[i].item;
                   } else {
@@ -98,12 +110,9 @@ class _ListPageState extends State<ListPage> {
                   setState(() {});
                   break;
                 } else {
-                  totalHeight += _items[i].height;
+                  totalHeight += height;
                 }
 
-                if (_items[i].height != 0) {
-                  print('index $i height=${_items[i].height}');
-                }
               }
               return false;
             },
@@ -123,16 +132,31 @@ class _ListPageState extends State<ListPage> {
           if (_items.length > 0 && _topProvinceEntity != null)
             InkWell(
               onTap: () {
-                _topProvinceEntity.hidden = !_topProvinceEntity.hidden;
-                setState(() {});
-                double height = 0;
+                double offsetHeight = 0;
                 for (int i = 0; i < _items.length; i++) {
                   if (_items[i].item == _topProvinceEntity) {
-                    _controller.jumpTo(height + _items[i].height);
+                    _controller.jumpTo(offsetHeight);
                   } else {
-                    height += _items[i].height;
+                    if(_items[i].province != null && _items[i].province.hidden) {
+                      continue;
+                    }
+                    if(_items[i].city != null && _items[i].city.hidden) {
+                      continue;
+                    }
+
+                    double height = 0;
+                    if(_items[i].item is ProvinceEntity) height = AppConst.provinceHeight;
+                    else if(_items[i].item is CityEntity) height = AppConst.cityHeight;
+                    else if(_items[i].item is AreaEntity) height = AppConst.areaHeight;
+
+                    offsetHeight += height;
                   }
                 }
+                Future.delayed(Duration(milliseconds: 100), (){
+                  _topProvinceEntity.hidden = !_topProvinceEntity.hidden;
+//                  Provider.of<ProvinceNotifier>(context, listen: false).refreshProvince();
+                setState(() {});
+                });
               },
               child: ProvinceItem(99999, _topProvinceEntity),
             ),

@@ -1,18 +1,17 @@
+import 'package:flutterlistdemo/base_entity.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'entity.g.dart';
 
 @JsonSerializable()
-class ProvinceEntity {
+class ProvinceEntity extends BaseEntity {
   String name;
   String code;
-  bool hidden;
   List<CityEntity> city;
 
   ProvinceEntity(
     this.name,
     this.code,
-    this.hidden,
     this.city,
   );
 
@@ -26,13 +25,12 @@ class ProvinceEntity {
 }
 
 @JsonSerializable()
-class CityEntity {
+class CityEntity extends BaseEntity {
   String name;
   String code;
-  bool hidden;
   List<AreaEntity> area;
 
-  CityEntity(this.name, this.code, this.hidden, this.area);
+  CityEntity(this.name, this.code, this.area);
 
   factory CityEntity.fromJson(Map<String, dynamic> json) {
     final city = _$CityEntityFromJson(json);
@@ -44,7 +42,7 @@ class CityEntity {
 }
 
 @JsonSerializable()
-class AreaEntity {
+class AreaEntity extends BaseEntity {
   String name;
   String code;
 
