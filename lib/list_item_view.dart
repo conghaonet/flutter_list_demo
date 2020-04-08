@@ -43,19 +43,12 @@ class _ListItemViewState extends State<ListItemView> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      key: _key,
-      child: _buildItemWidget(),
-    );
-  }
-
-  Widget _buildItemWidget() {
     if (widget.itemEntity.item is ProvinceEntity) {
-      return ProvinceItem(widget.index, widget.itemEntity.item as ProvinceEntity,);
+      return ProvinceItem(widget.index, widget.itemEntity.item as ProvinceEntity, key: _key,);
     } else if (widget.itemEntity.item is CityEntity) {
-      if (!widget.itemEntity.province.hidden) return CityItem(widget.index, widget.itemEntity.item as CityEntity,);
+      if (!widget.itemEntity.province.hidden) return CityItem(widget.index, widget.itemEntity.item as CityEntity, key: _key,);
     } else {
-      if (!widget.itemEntity.province.hidden && !widget.itemEntity.city.hidden) return AreaItem(widget.index, widget.itemEntity.item as AreaEntity);
+      if (!widget.itemEntity.province.hidden && !widget.itemEntity.city.hidden) return AreaItem(widget.index, widget.itemEntity.item as AreaEntity, key: _key,);
     }
     return SizedBox(
       height: 0,
