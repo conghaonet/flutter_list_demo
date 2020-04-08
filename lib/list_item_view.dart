@@ -47,11 +47,9 @@ class _ListItemViewState extends State<ListItemView> {
       return ProvinceItem(widget.index, widget.itemEntity.item as ProvinceEntity, key: _key,);
     } else if (widget.itemEntity.item is CityEntity) {
       if (!widget.itemEntity.province.hidden) return CityItem(widget.index, widget.itemEntity.item as CityEntity, key: _key,);
-    } else {
+    } else if (widget.itemEntity.item is AreaEntity) {
       if (!widget.itemEntity.province.hidden && !widget.itemEntity.city.hidden) return AreaItem(widget.index, widget.itemEntity.item as AreaEntity, key: _key,);
     }
-    return SizedBox(
-      height: 0,
-    );
+    return SizedBox(height: 0,);
   }
 }
