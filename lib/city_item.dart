@@ -6,10 +6,7 @@ class CityItem extends StatelessWidget {
   final int index;
   final CityEntity city;
 
-  CityItem(
-    this.index,
-    this.city,
-  );
+  CityItem(this.index, this.city, {Key key}): super(key: key);
 
   @override
   Widget build(BuildContext context) {

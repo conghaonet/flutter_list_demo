@@ -65,15 +65,6 @@ class _ListPageState extends State<ListPage> {
     Provider.of<ProvinceNotifier>(context, listen: false).addListener(() {
       setState(() {});
     });
-//    _controller.addListener(() {
-//      ScrollPosition scrollPosition = _controller.position;
-//      print('_controller.offset = ${_controller.offset}');
-//      for(int i=0; i<_items.length; i++) {
-//        if(_items[i].height != 0) {
-//          print('index $i height=${_items[i].height}');
-//        }
-//      }
-//    });
     setState(() {});
   }
 
@@ -112,7 +103,6 @@ class _ListPageState extends State<ListPage> {
                 } else {
                   totalHeight += height;
                 }
-
               }
               return false;
             },
@@ -122,9 +112,15 @@ class _ListPageState extends State<ListPage> {
               itemCount: _items.length,
               cacheExtent: 0.0,
               itemBuilder: (context, index) {
-                return ListItemView(
-                  index: index,
-                  itemEntity: _items[index],
+                return InkWell(
+                  onTap: _items[index].city != null && _items[index].province != null ? null : () {
+                    _items[index].item.hidden = ! _items[index].item.hidden;
+                    setState(() {});
+                  },
+                  child: ListItemView(
+                    index: index,
+                    itemEntity: _items[index],
+                  ),
                 );
               },
             ),
@@ -143,19 +139,16 @@ class _ListPageState extends State<ListPage> {
                     if(_items[i].city != null && _items[i].city.hidden) {
                       continue;
                     }
-
                     double height = 0;
                     if(_items[i].item is ProvinceEntity) height = AppConst.provinceHeight;
                     else if(_items[i].item is CityEntity) height = AppConst.cityHeight;
                     else if(_items[i].item is AreaEntity) height = AppConst.areaHeight;
-
                     offsetHeight += height;
                   }
                 }
                 Future.delayed(Duration(milliseconds: 100), (){
                   _topProvinceEntity.hidden = !_topProvinceEntity.hidden;
-//                  Provider.of<ProvinceNotifier>(context, listen: false).refreshProvince();
-                setState(() {});
+                  setState(() {});
                 });
               },
               child: ProvinceItem(99999, _topProvinceEntity),

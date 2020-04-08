@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutterlistdemo/app_const.dart';
 import 'package:flutterlistdemo/list_item_entity.dart';
 import 'package:flutterlistdemo/province_item.dart';
-import 'package:flutterlistdemo/province_notifier.dart';
-import 'package:provider/provider.dart';
 
 import 'area_item.dart';
 import 'city_item.dart';
@@ -45,27 +43,17 @@ class _ListItemViewState extends State<ListItemView> {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return Container(
       key: _key,
-      onTap: widget.itemEntity.item is AreaEntity
-          ? null
-          : () {
-              if (widget.itemEntity.item is ProvinceEntity) {
-                (widget.itemEntity.item as ProvinceEntity).hidden = !(widget.itemEntity.item as ProvinceEntity).hidden;
-              } else if (widget.itemEntity.item is CityEntity) {
-                (widget.itemEntity.item as CityEntity).hidden = !(widget.itemEntity.item as CityEntity).hidden;
-              }
-              Provider.of<ProvinceNotifier>(context, listen: false).refreshProvince();
-            },
       child: _buildItemWidget(),
     );
   }
 
   Widget _buildItemWidget() {
     if (widget.itemEntity.item is ProvinceEntity) {
-      return ProvinceItem(widget.index, widget.itemEntity.item as ProvinceEntity);
+      return ProvinceItem(widget.index, widget.itemEntity.item as ProvinceEntity,);
     } else if (widget.itemEntity.item is CityEntity) {
-      if (!widget.itemEntity.province.hidden) return CityItem(widget.index, widget.itemEntity.item as CityEntity);
+      if (!widget.itemEntity.province.hidden) return CityItem(widget.index, widget.itemEntity.item as CityEntity,);
     } else {
       if (!widget.itemEntity.province.hidden && !widget.itemEntity.city.hidden) return AreaItem(widget.index, widget.itemEntity.item as AreaEntity);
     }

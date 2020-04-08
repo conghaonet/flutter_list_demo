@@ -6,11 +6,10 @@ class AreaItem extends StatelessWidget {
   final int index;
   final AreaEntity area;
 
-  AreaItem(this.index, this.area);
+  AreaItem(this.index, this.area, {Key key}): super(key: key);
 
   @override
   Widget build(BuildContext context) {
-//    print('areaItem index=$index');
     return Container(
       padding: EdgeInsets.all(18),
       child: Text(
