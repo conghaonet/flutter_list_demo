@@ -31,19 +31,21 @@ class ListData {
 
   void _rebuildList() {
     for (int i = 0; i < _provinces.length; i++) {
+      final int provinceIndex = _items.length;
       _items.add(ListItemEntity(_provinces[i]));
       if (_provinces[i].city != null) {
         for (int j = 0; j < _provinces[i].city.length; j++) {
+          final int cityIndex = _items.length;
           _items.add(ListItemEntity(
             _provinces[i].city[j],
-            province: _provinces[i],
+            provinceIndex: provinceIndex,
           ));
           if (_provinces[i].city[j].area != null) {
             for (int k = 0; k < _provinces[i].city[j].area.length; k++) {
               _items.add(ListItemEntity(
                 _provinces[i].city[j].area[k],
-                city: _provinces[i].city[j],
-                province: _provinces[i],
+                cityIndex: cityIndex,
+                provinceIndex: provinceIndex,
               ));
             }
           }

@@ -2,10 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutterlistdemo/app_const.dart';
 import 'package:flutterlistdemo/list_data.dart';
 import 'package:flutterlistdemo/list_item_view.dart';
-import 'package:flutterlistdemo/province_item.dart';
-import 'package:flutterlistdemo/province_notifier.dart';
-import 'package:provider/provider.dart';
-
 import 'entity.dart';
 
 class ListPage extends StatefulWidget {
@@ -17,8 +13,6 @@ class _ListPageState extends State<ListPage> {
   int _topProvinceIndex = 0;
   int _topCityIndex = 1;
   int _topItemIndex = 0;
-  ProvinceEntity _topProvinceEntity;
-
   final ScrollController _controller = ScrollController();
 
   @override
@@ -27,14 +21,10 @@ class _ListPageState extends State<ListPage> {
     _initData();
   }
 
-
   void _initData() async {
     print('start>>>> ' + DateTime.now().toString());
     await listData.refreshData();
     print('end<<<< ' + DateTime.now().toString());
-    Provider.of<ProvinceNotifier>(context, listen: false).addListener(() {
-      setState(() {});
-    });
     setState(() {});
   }
 
@@ -48,28 +38,24 @@ class _ListPageState extends State<ListPage> {
         children: <Widget>[
           NotificationListener(
             onNotification: (ScrollNotification notification) {
-//              print('notification.metrics.pixels.toInt() = ${notification.metrics.pixels.toInt()}'); // 滚动位置。
+              print('notification.metrics.pixels.toInt() = ${notification.metrics.pixels.toInt()}'); // 滚动位置。
               double totalHeight = 0;
               for (int i = 0; i < listData.items.length; i++) {
-                if(listData.items[i].province != null && listData.items[i].province.hidden) {
+                if(listData.items[i].provinceIndex != null && listData.items[listData.items[i].provinceIndex].item.hidden) {
                   continue;
                 }
-                if(listData.items[i].city != null && listData.items[i].city.hidden) {
+                if(listData.items[i].cityIndex != null && listData.items[listData.items[i].cityIndex].item.hidden) {
                   continue;
                 }
-                double height = 0;
-                if(listData.items[i].item is ProvinceEntity) height = AppConst.provinceHeight;
-                else if(listData.items[i].item is CityEntity) height = AppConst.cityHeight;
-                else if(listData.items[i].item is AreaEntity) height = AppConst.areaHeight;
-
+                double height = AppConst.getItemHeight(listData.items[i]);
                 if (totalHeight <= notification.metrics.pixels && (totalHeight + height) > notification.metrics.pixels) {
-                  _topItemIndex=i;
-                  if (listData.items[i].item is ProvinceEntity) {
-                    _topProvinceIndex = i;
-                    _topProvinceEntity = listData.items[i].item;
-                  } else {
-                    _topProvinceEntity = listData.items[i].province;
-                  }
+                  _topItemIndex = i;
+                  _topProvinceIndex = listData.items[i].provinceIndex ?? i;
+                  Future((){
+                    setState(() {
+
+                    });
+                  });
                   setState(() {});
                   break;
                 } else {
@@ -85,7 +71,7 @@ class _ListPageState extends State<ListPage> {
               cacheExtent: 0.0,
               itemBuilder: (context, index) {
                 return InkWell(
-                  onTap: listData.items[index].city != null && listData.items[index].province != null ? null : () {
+                  onTap: listData.items[index].cityIndex != null && listData.items[index].provinceIndex != null ? null : () {
                     listData.items[index].item.hidden = ! listData.items[index].item.hidden;
                     setState(() {});
                   },
@@ -97,18 +83,18 @@ class _ListPageState extends State<ListPage> {
               },
             ),
           ),
-          if (listData.items.length > 0 && _topProvinceEntity != null)
+          if (listData.items.length > 0)
             InkWell(
               onTap: () {
                 double offsetHeight = 0;
                 for (int i = 0; i < listData.items.length; i++) {
-                  if (listData.items[i].item == _topProvinceEntity) {
+                  if (i == _topProvinceIndex) {
                     _controller.jumpTo(offsetHeight);
                   } else {
-                    if(listData.items[i].province != null && listData.items[i].province.hidden) {
+                    if(listData.items[i].provinceIndex != null && listData.items[listData.items[i].provinceIndex].item.hidden) {
                       continue;
                     }
-                    if(listData.items[i].city != null && listData.items[i].city.hidden) {
+                    if(listData.items[i].cityIndex != null && listData.items[listData.items[i].cityIndex].item.hidden) {
                       continue;
                     }
                     double height = 0;
@@ -118,12 +104,12 @@ class _ListPageState extends State<ListPage> {
                     offsetHeight += height;
                   }
                 }
-                Future.delayed(Duration(milliseconds: 100), (){
-                  _topProvinceEntity.hidden = !_topProvinceEntity.hidden;
+                Future((){
+                  listData.items[_topProvinceIndex].item.hidden = !listData.items[_topProvinceIndex].item.hidden;
                   setState(() {});
                 });
               },
-              child: ProvinceItem(99999, _topProvinceEntity),
+              child: ListItemView(index: _topProvinceIndex, itemEntity: listData.items[_topProvinceIndex]),
             ),
         ],
       ),
