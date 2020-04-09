@@ -120,11 +120,7 @@ class _ListPageState extends State<ListPage> {
                     if(listData.items[i].cityIndex != null && listData.items[listData.items[i].cityIndex].item.hidden) {
                       continue;
                     }
-                    double height = 0;
-                    if(listData.items[i].item is ProvinceEntity) height = AppConst.provinceHeight;
-                    else if(listData.items[i].item is CityEntity) height = AppConst.cityHeight;
-                    else if(listData.items[i].item is AreaEntity) height = AppConst.areaHeight;
-                    offsetHeight += height;
+                    offsetHeight += AppConst.getItemHeight(listData.items[i]);
                   }
                 }
                 Future.delayed(Duration(milliseconds: 100), (){
@@ -132,7 +128,13 @@ class _ListPageState extends State<ListPage> {
                   setState(() {});
                 });
               },
-              child: ListItemView(index: _topProvinceIndex, itemEntity: listData.items[_topProvinceIndex]),
+              child: SizedBox(
+                width: double.infinity,
+                child: ListItemView(
+                  index: _topProvinceIndex,
+                  itemEntity: listData.items[_topProvinceIndex],
+                ),
+              ),
             ),
         ],
       ),
