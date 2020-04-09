@@ -26,6 +26,27 @@ class _ListPageState extends State<ListPage> {
     await listData.refreshData();
     print('end<<<< ' + DateTime.now().toString());
     setState(() {});
+    _controller.addListener((){
+      print('_controller.offset = ${_controller.offset}');
+      double totalHeight = 0;
+      for (int i = 0; i < listData.items.length; i++) {
+        if(listData.items[i].provinceIndex != null && listData.items[listData.items[i].provinceIndex].item.hidden) {
+          continue;
+        }
+        if(listData.items[i].cityIndex != null && listData.items[listData.items[i].cityIndex].item.hidden) {
+          continue;
+        }
+        double height = AppConst.getItemHeight(listData.items[i]);
+        if (totalHeight <= _controller.offset && (totalHeight + height) > _controller.offset) {
+          _topItemIndex = i;
+          _topProvinceIndex = listData.items[i].provinceIndex ?? i;
+          setState(() {});
+          break;
+        } else {
+          totalHeight += height;
+        }
+      }
+    });
   }
 
   @override
@@ -37,6 +58,7 @@ class _ListPageState extends State<ListPage> {
       body: Stack(
         children: <Widget>[
           NotificationListener(
+/*
             onNotification: (ScrollNotification notification) {
               print('notification.metrics.pixels.toInt() = ${notification.metrics.pixels.toInt()}'); // 滚动位置。
               double totalHeight = 0;
@@ -64,6 +86,7 @@ class _ListPageState extends State<ListPage> {
               }
               return false;
             },
+*/
             child: ListView.builder(
               controller: _controller,
               physics: ClampingScrollPhysics(),
@@ -104,7 +127,7 @@ class _ListPageState extends State<ListPage> {
                     offsetHeight += height;
                   }
                 }
-                Future((){
+                Future.delayed(Duration(milliseconds: 100), (){
                   listData.items[_topProvinceIndex].item.hidden = !listData.items[_topProvinceIndex].item.hidden;
                   setState(() {});
                 });
